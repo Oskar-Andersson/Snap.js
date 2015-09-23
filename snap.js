@@ -28,7 +28,9 @@
             tapToClose: true,
             touchToDrag: true,
             slideIntent: 40, // degrees
-            minDragDistance: 5
+            minDragDistance: 5,
+            shelfAlwaysVisibleThreshold: 0 //Always use in tandem with max or minPosition (and preferably hyperextensible: false), limiting shelf implosion to show a x pixels wide bar when closed
+
         },
         cache = {
             simpleStates: {
@@ -232,7 +234,6 @@
                     if(isNaN(n)){
                         n = 0;
                     }
-
                     if( utils.canTransform() ){
                         var theTranslate = 'translate3d(' + n + 'px, 0,0)';
                         settings.element.style[cache.vendor+'Transform'] = theTranslate;
@@ -417,12 +418,11 @@
                     if (cache.isDragging) {
                         utils.dispatchEvent('end');
                         var translated = action.translate.get.matrix(4);
-
                         // Tap Close
                         if (cache.dragWatchers.current === 0 && translated !== 0 && settings.tapToClose) {
                             utils.dispatchEvent('close');
                             utils.events.prevent(e);
-                            action.translate.easeTo(0);
+                            action.translate.easeTo(settings.shelfAlwaysVisibleThreshold); // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
                             cache.isDragging = false;
                             cache.startDragX = 0;
                             return;
@@ -433,7 +433,7 @@
                             // Halfway, Flicking, or Too Far Out
                             if ((cache.simpleStates.halfway || cache.simpleStates.hyperExtending || cache.simpleStates.flick)) {
                                 if (cache.simpleStates.flick && cache.simpleStates.towards === 'left') { // Flicking Closed
-                                    action.translate.easeTo(0);
+                                    action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
                                 } else if (
                                     (cache.simpleStates.flick && cache.simpleStates.towards === 'right') || // Flicking Open OR
                                     (cache.simpleStates.halfway || cache.simpleStates.hyperExtending) // At least halfway open OR hyperextending
@@ -441,14 +441,14 @@
                                     action.translate.easeTo(settings.maxPosition); // Open Left
                                 }
                             } else {
-                                action.translate.easeTo(0); // Close Left
+                                action.translate.easeTo(settings.shelfAlwaysVisibleThreshold); // Close Left
                             }
                             // Revealing Right
                         } else if (cache.simpleStates.opening === 'right') {
                             // Halfway, Flicking, or Too Far Out
                             if ((cache.simpleStates.halfway || cache.simpleStates.hyperExtending || cache.simpleStates.flick)) {
                                 if (cache.simpleStates.flick && cache.simpleStates.towards === 'right') { // Flicking Closed
-                                    action.translate.easeTo(0);
+                                    action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
                                 } else if (
                                     (cache.simpleStates.flick && cache.simpleStates.towards === 'left') || // Flicking Open OR
                                     (cache.simpleStates.halfway || cache.simpleStates.hyperExtending) // At least halfway open OR hyperextending
@@ -456,7 +456,7 @@
                                     action.translate.easeTo(settings.minPosition); // Open Right
                                 }
                             } else {
-                                action.translate.easeTo(0); // Close Right
+                                action.translate.easeTo(settings.shelfAlwaysVisibleThreshold); // Close Right
                             }
                         }
                         cache.isDragging = false;
@@ -496,7 +496,8 @@
         };
         this.close = function() {
             utils.dispatchEvent('close');
-            action.translate.easeTo(0);
+            // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
+            action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
         };
         this.expand = function(side){
             var to = win.innerWidth || doc.documentElement.clientWidth;
