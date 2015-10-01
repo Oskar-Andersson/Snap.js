@@ -1,12 +1,15 @@
 /*
  * Snap.js
  *
- * Copyright 2013, Jacob Kelley - http://jakiestfu.com/
+ * Copyright
+ *          2015, Oskar Andersson - http://www.shamsiel.com/ 
+ *          2013, Jacob Kelley - http://jakiestfu.com/
+ *
  * Released under the MIT Licence
  * http://opensource.org/licenses/MIT
  *
- * Github:  http://github.com/jakiestfu/Snap.js/
- * Version: 1.9.3
+ * Github:  https://github.com/Oskar-Andersson/Snap.js/
+ * Version: 1.9.?
  */
 /*jslint browser: true*/
 /*global define, module, ender*/
@@ -486,18 +489,29 @@
                 utils.klass.add(doc.body, 'snapjs-left');
                 utils.klass.remove(doc.body, 'snapjs-right');
                 action.translate.easeTo(settings.maxPosition);
+                //var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                //var desiredW = (w-settings.shelfAlwaysVisibleThreshold) - (settings.maxPosition-settings.shelfAlwaysVisibleThreshold);
+                //settings.element.style.width = (desiredW/w)*100+'%';
+                settings.element.style.width = settings.element.offsetWidth - (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
             } else if (side === 'right') {
                 cache.simpleStates.opening = 'right';
                 cache.simpleStates.towards = 'left';
                 utils.klass.remove(doc.body, 'snapjs-left');
                 utils.klass.add(doc.body, 'snapjs-right');
                 action.translate.easeTo(settings.minPosition);
+                settings.element.style.width = settings.element.offsetWidth + (settings.minPosition+settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
             }
         };
         this.close = function() {
             utils.dispatchEvent('close');
             // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
             action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
+            if(cache.simpleStates.opening==='left'){
+                settings.element.style.width = settings.element.offsetWidth + (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
+            } else if(cache.simpleStates.opening==='right'){
+                settings.element.style.width = settings.element.offsetWidth - (settings.minPosition+settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
+            }
+
         };
         this.expand = function(side){
             var to = win.innerWidth || doc.documentElement.clientWidth;
