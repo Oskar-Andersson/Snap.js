@@ -473,7 +473,19 @@
                 utils.deepExtend(settings, opts);
                 cache.vendor = utils.vendor();
                 action.drag.listen();
+                cache.simpleStates.opening='left';
             }
+
+            window.addEventListener('resize', function(){
+                var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                // var current = settings.element.style.width +'px';
+                // console.log('Resize happened:'+w+', and current:'+current+', and new width:'+(w-(settings.maxPosition)));
+                if(cache.simpleStates.state==='closed'){
+                    settings.element.style.width = w-settings.shelfAlwaysVisibleThreshold + 'px'; // Fixes resize width
+                } else if(cache.simpleStates.state==='open'){
+                    settings.element.style.width = w-(settings.maxPosition) + 'px'; // Fixes resize width
+                }
+            }, true);
         };
         /*
          * Public
@@ -486,6 +498,7 @@
             if (side === 'left') {
                 cache.simpleStates.opening = 'left';
                 cache.simpleStates.towards = 'right';
+                cache.simpleStates.state = 'open';
                 utils.klass.add(doc.body, 'snapjs-left');
                 utils.klass.remove(doc.body, 'snapjs-right');
                 action.translate.easeTo(settings.maxPosition);
@@ -496,6 +509,7 @@
             } else if (side === 'right') {
                 cache.simpleStates.opening = 'right';
                 cache.simpleStates.towards = 'left';
+                cache.simpleStates.state = 'open';
                 utils.klass.remove(doc.body, 'snapjs-left');
                 utils.klass.add(doc.body, 'snapjs-right');
                 action.translate.easeTo(settings.minPosition);
@@ -506,6 +520,8 @@
             utils.dispatchEvent('close');
             // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
             action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
+            cache.simpleStates.state = 'closed';
+
             if(cache.simpleStates.opening==='left'){
                 settings.element.style.width = settings.element.offsetWidth + (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
             } else if(cache.simpleStates.opening==='right'){
@@ -541,11 +557,11 @@
 
         this.enable = function() {
             utils.dispatchEvent('enable');
-            action.drag.listen();
+            //action.drag.listen();
         };
         this.disable = function() {
             utils.dispatchEvent('disable');
-            action.drag.stopListening();
+            //action.drag.stopListening();
         };
 
         this.settings = function(opts){
