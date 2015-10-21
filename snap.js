@@ -474,7 +474,6 @@
                 cache.vendor = utils.vendor();
                 action.drag.listen();
                 cache.simpleStates.opening='left';
-                cache.simpleStates.state='open';
             }
 
             window.addEventListener('resize', function(){
@@ -524,11 +523,14 @@
             // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
             action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
             cache.simpleStates.state = 'closed';
+            console.log('closing: ' + cache.simpleStates.opening+ ' and state: '+cache.simpleStates.state);
 
-            if(cache.simpleStates.opening==='left'){
-                settings.element.style.width = settings.element.offsetWidth + (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
-            } else if(cache.simpleStates.opening==='right'){
+            
+            if(cache.simpleStates.opening==='right'){
                 settings.element.style.width = settings.element.offsetWidth - (settings.minPosition+settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
+            } else {
+                // Left and null 
+                settings.element.style.width = settings.element.offsetWidth + (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
             }
 
         };
