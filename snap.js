@@ -474,17 +474,20 @@
                 cache.vendor = utils.vendor();
                 action.drag.listen();
                 cache.simpleStates.opening='left';
+                cache.simpleStates.state='open';
             }
 
             window.addEventListener('resize', function(){
                 var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-                // var current = settings.element.style.width +'px';
-                // console.log('Resize happened:'+w+', and current:'+current+', and new width:'+(w-(settings.maxPosition)));
+                //var current = settings.element.style.width;
+                var newVal; 
                 if(cache.simpleStates.state==='closed'){
-                    settings.element.style.width = w-settings.shelfAlwaysVisibleThreshold + 'px'; // Fixes resize width
-                } else if(cache.simpleStates.state==='open'){
-                    settings.element.style.width = w-(settings.maxPosition) + 'px'; // Fixes resize width
+                    newVal = w-settings.shelfAlwaysVisibleThreshold + 'px'; // Fixes resize width
+                } else{
+                    newVal = w-(settings.maxPosition) + 'px'; // Fixes resize width
                 }
+                settings.element.style.width = newVal;
+                //console.log('Resize happened:'+w+', and current:'+current+', and new width:'+newVal+' (shelfThresh:'+settings.shelfAlwaysVisibleThreshold+' maxPosition: '+settings.maxPosition+')');
             }, true);
         };
         /*
