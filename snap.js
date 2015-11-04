@@ -523,7 +523,7 @@
             // Allow limiting the shelf implosion to a fixed number (always display a part of the shelf)
             action.translate.easeTo(settings.shelfAlwaysVisibleThreshold);
             cache.simpleStates.state = 'closed';
-            console.log('closing: ' + cache.simpleStates.opening+ ' and state: '+cache.simpleStates.state);
+            //console.log('closing: ' + cache.simpleStates.opening+ ' and state: '+cache.simpleStates.state);
 
             
             if(cache.simpleStates.opening==='right'){
