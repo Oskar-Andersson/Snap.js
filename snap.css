@@ -41,8 +41,8 @@ html, body {
   right: auto;
   bottom: 0;
   left: auto;
-  width: 265px;
   height: auto;
+  width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   -webkit-transition: width 0.3s ease;

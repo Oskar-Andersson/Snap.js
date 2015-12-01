@@ -26,8 +26,8 @@
             flickThreshold: 50,
             transitionSpeed: 0.3,
             easing: 'ease',
-            maxPosition: 266,
-            minPosition: -266,
+            maxPosition: 100,
+            minPosition: -100,
             tapToClose: true,
             touchToDrag: true,
             slideIntent: 40, // degrees
@@ -475,6 +475,11 @@
                 action.drag.listen();
                 cache.simpleStates.opening='left';
             }
+            if(opts.width){
+                settings.maxPosition = opts.width;
+                settings.minPosition = -opts.width;
+                //document.getElementsByClassName('snap-drawer')[0].style.width = opts.width+'px !important';
+            }
 
             window.addEventListener('resize', function(){
                 var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -508,6 +513,7 @@
                 //var desiredW = (w-settings.shelfAlwaysVisibleThreshold) - (settings.maxPosition-settings.shelfAlwaysVisibleThreshold);
                 //settings.element.style.width = (desiredW/w)*100+'%';
                 settings.element.style.width = settings.element.offsetWidth - (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
+                //document.getElementsByClassName('snap-drawer')[0].style.width = settings.maxPosition+'px !important';
             } else if (side === 'right') {
                 cache.simpleStates.opening = 'right';
                 cache.simpleStates.towards = 'left';
@@ -531,6 +537,7 @@
             } else {
                 // Left and null 
                 settings.element.style.width = settings.element.offsetWidth + (settings.maxPosition-settings.shelfAlwaysVisibleThreshold)+'px'; // Fixes width, but not responsiveness
+                //settings.snapDrawerElement.style.width = settings.minPosition+'px !important';
             }
 
         };
